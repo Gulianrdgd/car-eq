@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import adapter from '@sveltejs/adapter-static';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig(({ mode }) => ({
@@ -16,8 +17,10 @@ export default defineConfig(({ mode }) => ({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 
-			// static SPA: no backend, every route falls back to the client router
-			adapter: adapter({ fallback: 'index.html' })
+			// static SPA: each route gets an empty prerendered shell; 404.html catches the rest (GitHub Pages)
+			adapter: adapter({ fallback: '404.html' }),
+			// GitHub Pages project sites live under /<repo>; CI sets BASE_PATH
+			paths: { base: (loadEnv(mode, '.', '').BASE_PATH ?? '') as '' | `/${string}` }
 		})
 	],
 	test: {

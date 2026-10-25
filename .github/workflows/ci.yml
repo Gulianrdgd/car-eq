@@ -23,6 +23,36 @@ jobs:
       - run: yarn run check
       - run: yarn test
 
+  # Static site on GitHub Pages (https, so the mic works), from main only.
+  pages:
+    needs: check
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile --non-interactive
+      - id: pages
+        uses: actions/configure-pages@v5
+      - run: yarn build
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
   # Builds on every run; pushes to GitHub Container Registry only from main and version tags.
   docker:
     needs: check
