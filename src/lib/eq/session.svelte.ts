@@ -45,26 +45,49 @@ export function lvlOf(recs: Pick<Recording, 'clip' | 'rms'>[]): Lvl {
 
 const DEFAULT_BANDS = '25, 40, 63, 100, 160, 250, 400, 630, 1k, 2.5k, 6.3k, 16k';
 const KEY = 'careq.v3';
-const PERSISTED = ['car', 'bandsText', 'range', 'step', 'earUse', 'setupDone', 'preset', 'bass', 'treble', 'it', 'cur', 'note', 'next', 'checklist', 'ear', 'recs', 'history'] as const;
+/** Every car that was set up, by id, so you can switch between them. */
+const CARS_KEY = 'careq.cars';
+const PERSISTED = ['id', 'car', 'bandsText', 'range', 'step', 'earUse', 'setupDone', 'preset', 'bass', 'treble', 'it', 'cur', 'note', 'next', 'checklist', 'ear', 'recs', 'history'] as const;
 
 const storage = {
-	get(): Record<string, unknown> {
+	get(key: string): Record<string, any> {
 		try {
-			return JSON.parse(localStorage.getItem(KEY) || '{}') || {};
+			return JSON.parse(localStorage.getItem(key) || '{}') || {};
 		} catch {
 			return {};
 		}
 	},
-	set(v: unknown) {
+	set(key: string, v: unknown) {
 		try {
-			localStorage.setItem(KEY, JSON.stringify(v));
+			localStorage.setItem(key, JSON.stringify(v));
 		} catch {
 			/* private mode, quota */
 		}
 	}
 };
 
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+export const bandsOf = (text: string) =>
+	parseList(text)
+		.filter((f) => f >= 10 && f <= 22000)
+		.sort((a, b) => a - b);
+
+/** A saved car: the persisted fields of a session, plus when it was last used. */
+export type CarSnapshot = { [K in (typeof PERSISTED)[number]]: Session[K] } & { updated: number };
+
+/** Fits for a saved car: the first one measured and the best one. */
+export function carFits(s: CarSnapshot) {
+	const seat: Seat | null = s.recs.driver.length ? 'driver' : s.recs.passenger.length ? 'passenger' : null;
+	const target = GRID.map((f) => targetAt(f, s.preset, s.bass, s.treble));
+	const now = seat ? fitScore(avgResp(s.recs[seat])!, target) : null;
+	const fits = [...s.history.map((h) => h.fit), now].filter((f) => f != null);
+	return { first: fits[0] ?? null, best: fits.length ? Math.min(...fits) : null };
+}
+
 class Session {
+	id = $state('');
+
 	// setup
 	car = $state('');
 	bandsText = $state(DEFAULT_BANDS);
@@ -92,21 +115,54 @@ class Session {
 	/** running response while capturing; not persisted */
 	live = $state.raw<Curve | null>(null);
 
+	#defaults: Record<string, unknown>;
+
 	constructor() {
-		const s = storage.get();
-		Object.assign(this, Object.fromEntries(PERSISTED.flatMap((k) => (s[k] != null ? [[k, s[k]]] : []))));
+		this.#defaults = this.#snapshot();
+		this.#load(storage.get(KEY));
+		this.id ||= newId();
+	}
+
+	#snapshot() {
+		return Object.fromEntries(PERSISTED.map((k) => [k, $state.snapshot(this[k])]));
+	}
+
+	#load(s: Record<string, unknown>) {
+		Object.assign(this, structuredClone(this.#defaults), Object.fromEntries(PERSISTED.flatMap((k) => (s[k] != null ? [[k, s[k]]] : []))));
+		this.live = null;
 	}
 
 	/** Call inside an $effect: reads every persisted field, so it re-runs on change. */
 	save() {
-		storage.set(Object.fromEntries(PERSISTED.map((k) => [k, $state.snapshot(this[k])])));
+		const snap = this.#snapshot();
+		storage.set(KEY, snap);
+		// a car shows up in the list once it has been set up
+		if (snap.setupDone) storage.set(CARS_KEY, { ...storage.get(CARS_KEY), [this.id]: { ...snap, updated: Date.now() } });
 	}
 
-	bands = $derived(
-		parseList(this.bandsText)
-			.filter((f) => f >= 10 && f <= 22000)
-			.sort((a, b) => a - b)
-	);
+	/** All saved cars, most recently used first. */
+	cars(): CarSnapshot[] {
+		return (Object.values(storage.get(CARS_KEY)) as CarSnapshot[]).sort((a, b) => b.updated - a.updated);
+	}
+
+	/** Make a saved car the current one. */
+	openCar(id: string) {
+		const s = storage.get(CARS_KEY)[id];
+		if (s) this.#load(s);
+	}
+
+	/** Start a new car from scratch; the current one stays in the list. */
+	newCar() {
+		this.#load({ id: newId() });
+	}
+
+	removeCar(id: string) {
+		const all = storage.get(CARS_KEY);
+		delete all[id];
+		storage.set(CARS_KEY, all);
+	}
+
+	bands = $derived(bandsOf(this.bandsText));
 
 	target = $derived(GRID.map((f) => targetAt(f, this.preset, this.bass, this.treble)));
 

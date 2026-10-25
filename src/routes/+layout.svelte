@@ -7,6 +7,7 @@
 	import { buttonVariants } from '#lib/components/ui/button/index.js';
 	import GearIcon from 'phosphor-svelte/lib/Gear';
 	import HistoryIcon from 'phosphor-svelte/lib/ClockCounterClockwise';
+	import CarIcon from 'phosphor-svelte/lib/Car';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { session } from '#lib/eq/session.svelte.js';
@@ -50,6 +51,9 @@
 				<p class="text-muted-foreground font-mono text-[11px]">iteration {session.it}</p>
 			</a>
 			<nav class="flex gap-1" aria-label="Pages">
+				<a href={resolve('/cars')} class={icon('/cars')} aria-label="Your cars" aria-current={page.route.id === '/cars' ? 'page' : undefined}>
+					<CarIcon />
+				</a>
 				<a href={resolve('/history')} class={icon('/history')} aria-label="History" aria-current={page.route.id === '/history' ? 'page' : undefined}>
 					<HistoryIcon />
 				</a>

@@ -1,4 +1,5 @@
 import { bandsFromPsd, pinkNoise, type Curve } from './dsp';
+import { R_GRID } from './ceq';
 
 let actx: AudioContext | null = null;
 let noiseBuf: AudioBuffer | null = null;
@@ -59,8 +60,11 @@ class AudioEngine {
 	earKey = $state<string | null>(null);
 	earLevel = $state(-12);
 
+	demoOn = $state(false);
+
 	#noise: AudioBufferSourceNode | null = null;
 	#ear: EarSession | null = null;
+	#demo: { src: AudioBufferSourceNode; filters: BiquadFilterNode[] } | null = null;
 
 	toggleNoise() {
 		if (this.#noise) {
@@ -70,6 +74,7 @@ class AudioEngine {
 			return;
 		}
 		this.stopEar();
+		this.stopDemo();
 		const a = ctx();
 		this.#noise = loopingNoise(a);
 		this.#noise.connect(a.destination);
@@ -80,6 +85,7 @@ class AudioEngine {
 	/** Alternate a band around fc with a 1 kHz reference, once per second. */
 	startEar(fc: number, gainDb: number) {
 		this.stopEar();
+		this.stopDemo();
 		const a = ctx();
 		const src = loopingNoise(a);
 		const master = a.createGain();
@@ -136,6 +142,48 @@ class AudioEngine {
 	setEarLevel(db: number) {
 		this.earLevel = db;
 		this.#ear?.master.gain.setTargetAtTime(dbToLin(db) * 3, ctx().currentTime, 0.05);
+	}
+
+	/** Loop `buf` (pink noise by default) through a 1/3-octave filter bank, one gain per R_GRID point. */
+	startDemo(gains: number[], buf?: AudioBuffer) {
+		this.stopDemo();
+		this.stopEar();
+		if (this.#noise) this.toggleNoise();
+		const a = ctx();
+		const src = loopingNoise(a);
+		if (buf) src.buffer = buf;
+		const out = a.createGain();
+		// headroom for the boosts
+		out.gain.value = 0.35;
+		out.connect(a.destination);
+		let node: AudioNode = src;
+		const filters = R_GRID.map((fc, i) => {
+			const f = a.createBiquadFilter();
+			f.type = 'peaking';
+			f.frequency.value = fc;
+			f.Q.value = 3;
+			f.gain.value = gains[i] ?? 0;
+			node.connect(f);
+			node = f;
+			return f;
+		});
+		node.connect(out);
+		src.start();
+		this.#demo = { src, filters };
+		this.demoOn = true;
+	}
+
+	/** Change the curve while it plays, without a gap. */
+	setDemoGains(gains: number[]) {
+		const t = ctx().currentTime;
+		this.#demo?.filters.forEach((f, i) => f.gain.setTargetAtTime(gains[i] ?? 0, t, 0.05));
+	}
+
+	stopDemo() {
+		if (!this.#demo) return;
+		this.#demo.src.stop();
+		this.#demo = null;
+		this.demoOn = false;
 	}
 
 	async decode(file: File): Promise<AudioBuffer> {

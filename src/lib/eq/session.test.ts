@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { session } from './session.svelte';
 import { parseCeqSet } from './ceq';
 import { GRID } from './dsp';
@@ -26,4 +26,31 @@ it('round trip: export, paste a CEQ-SET, apply, export shows the new cur and nex
 	expect(after).toMatch(/^hist=1:\d+\.\d$/m);
 	expect(session.next).toEqual({ kind: 'passenger' });
 	expect(session.history[0].cur).toEqual([0, 0, 0, 0, 0]);
+});
+
+it('keeps each car separately and switches between them', () => {
+	const mem = new Map<string, string>();
+	vi.stubGlobal('localStorage', { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => mem.set(k, v) });
+
+	session.newCar();
+	session.saveSetup({ car: 'Polo', bandsText: '100, 1k, 10k', range: 12, step: 1, earUse: 'bass', preset: 'harman' });
+	session.cur = [2, 0, -1];
+	session.save();
+	const polo = session.id;
+
+	session.newCar();
+	expect(session.setupDone).toBe(false);
+	expect(session.history).toEqual([]);
+	session.saveSetup({ car: 'Golf', bandsText: '63, 250, 4k', range: 10, step: 1, earUse: 'bass', preset: 'flat' });
+	session.save();
+
+	expect(session.cars().map((c) => c.car).sort()).toEqual(['Golf', 'Polo']);
+	session.openCar(polo);
+	expect(session.car).toBe('Polo');
+	expect(session.cur).toEqual([2, 0, -1]);
+	expect(session.preset).toBe('harman');
+
+	session.removeCar(polo);
+	expect(session.cars().map((c) => c.car)).toEqual(['Golf']);
+	vi.unstubAllGlobals();
 });

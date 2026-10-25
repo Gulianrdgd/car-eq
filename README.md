@@ -27,6 +27,16 @@ Everything runs in the browser. Measurements and settings stay in the phone's lo
     <td>Set the new values in the car</td>
     <td>Tune the bass by ear</td>
   </tr>
+  <tr>
+    <td><img src="docs/screenshots/overview.png" width="240" alt="Overview screen with the fit before and after and the response chart"></td>
+    <td><img src="docs/screenshots/cars.png" width="240" alt="Your cars screen with a card per car"></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Compare before and after, and listen to both</td>
+    <td>Keep a tuning per car</td>
+    <td></td>
+  </tr>
 </table>
 
 ## How a tuning round works
@@ -40,6 +50,12 @@ The first time, Setup asks for the band frequencies from your EQ screen (`1k` an
 5. The Apply screen shows the new values in large type with the changes highlighted. Set them on the head unit and measure again.
 
 You can also measure the passenger seat, tune the bass by ear, go back to the values of an earlier round from History, or apply the page's own suggestion without asking Claude.
+
+When Claude answers `next=done`, the page shows an overview: the fit of the first and the latest measurement, both responses on one chart, the fit per round and how far each slider moved from where you started. It can also play pink noise or a song from your phone shaped like each measurement, so you can switch between before, after and the target on headphones. The bass will sound thinner than it is in the car, because phone mics pick up little of it. The overview of any car is also on the cars page.
+
+## More than one car
+
+The car button in the header opens a list of every car you have set up, with its fit, number of rounds and current slider values. "Add a car" starts a new setup and keeps the others. Each car keeps its own bands, target, history and measurements in local storage.
 
 ## Tips for good measurements
 
