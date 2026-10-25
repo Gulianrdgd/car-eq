@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { session } from '#lib/eq/session.svelte.js';
-	import { fmtF, parseList, type EarUse } from '#lib/eq/dsp.js';
+	import { PRESETS, fmtF, parseList, type EarUse, type PresetKey } from '#lib/eq/dsp.js';
 
 	const EAR_USE: Record<EarUse, string> = {
 		bass: 'Use for bass below 100 Hz',
@@ -23,6 +23,7 @@
 	let range = $state(session.range);
 	let step = $state(String(session.step));
 	let earUse = $state(session.earUse);
+	let preset = $state(session.preset);
 	let confirmReset = $state(false);
 
 	const bands = $derived(parseList(bandsText).filter((f) => f >= 10 && f <= 22000).sort((a, b) => a - b));
@@ -32,7 +33,7 @@
 
 	function save() {
 		const first = !session.setupDone;
-		session.saveSetup({ car, bandsText, range: Math.round(range), step: +step, earUse });
+		session.saveSetup({ car, bandsText, range: Math.round(range), step: +step, earUse, preset });
 		goto(resolve(first ? '/prepare' : '/'));
 	}
 </script>
@@ -85,6 +86,20 @@
 			</ToggleGroup.Root>
 		</Field>
 	</div>
+
+	<Field label="Target sound">
+		<Select.Root type="single" value={preset} onValueChange={(v) => (preset = v as PresetKey)}>
+			<Select.Trigger class="w-full text-sm data-[size=default]:h-11">{PRESETS[preset].label}</Select.Trigger>
+			<Select.Content>
+				{#each Object.entries(PRESETS) as [key, p] (key)}
+					<Select.Item value={key} label={p.label} class="py-3 text-sm">
+						{p.label} <span class="text-muted-foreground">{p.hint}</span>
+					</Select.Item>
+				{/each}
+			</Select.Content>
+		</Select.Root>
+		<p class="text-muted-foreground text-xs">You can change it on the Results screen at any time.</p>
+	</Field>
 
 	<Field label="Ear tuning results">
 		<Select.Root type="single" value={earUse} onValueChange={(v) => (earUse = v as EarUse)}>

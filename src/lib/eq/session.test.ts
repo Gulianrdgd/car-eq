@@ -4,7 +4,7 @@ import { parseCeqSet } from './ceq';
 import { GRID } from './dsp';
 
 it('round trip: export, paste a CEQ-SET, apply, export shows the new cur and next iteration', () => {
-	session.saveSetup({ car: 'Test car', bandsText: '63, 250, 1k, 4k, 16k', range: 12, step: 1, earUse: 'bass' });
+	session.saveSetup({ car: 'Test car', bandsText: '63, 250, 1k, 4k, 16k', range: 12, step: 1, earUse: 'bass', preset: 'mild' });
 	const resp = GRID.map((f) => (f > 150 && f < 300 ? 4 : 0));
 	session.setRecs('driver', [{ name: 'mic', dur: 5, sr: 48000, peak: -6, rms: -20, clip: 0, resp }]);
 

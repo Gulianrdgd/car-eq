@@ -74,7 +74,7 @@ class Session {
 	setupDone = $state(false);
 
 	// target
-	preset = $state<PresetKey>('mild');
+	preset = $state<PresetKey>('harman');
 	bass = $state(0);
 	treble = $state(0);
 
@@ -166,7 +166,7 @@ class Session {
 		})
 	);
 
-	saveSetup(o: { car: string; bandsText: string; range: number; step: number; earUse: EarUse }) {
+	saveSetup(o: { car: string; bandsText: string; range: number; step: number; earUse: EarUse; preset: PresetKey }) {
 		Object.assign(this, o, { setupDone: true });
 		// keep one value per band, within range
 		this.cur = this.bands.map((_, i) => Math.max(-this.range, Math.min(this.range, this.cur[i] ?? 0)));

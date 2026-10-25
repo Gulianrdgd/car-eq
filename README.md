@@ -31,7 +31,7 @@ Everything runs in the browser. Measurements and settings stay in the phone's lo
 
 ## How a tuning round works
 
-The first time, Setup asks for the band frequencies from your EQ screen (`1k` and `2.5k` work), the maximum boost or cut per slider, the step size and a name for the car. After that you go round a loop until the car sounds right.
+The first time, Setup asks for the band frequencies from your EQ screen (`1k` and `2.5k` work), the maximum boost or cut per slider, the step size, a name for the car and the target sound. The default target is the Harman-style car curve, which has more bass; you can switch to a milder curve or a flat one there or on the Results screen. After that you go round a loop until the car sounds right.
 
 1. On the Prepare screen, tick off the checklist: engine off, doors and windows closed, fan off, loudness and bass boost off, balance centered. Then set the slider values the page shows. In the first round they are all 0.
 2. On Measure, play the pink noise at your normal listening volume, from the phone over Bluetooth or from a USB stick. The page checks the level, then records five spots around your head for 5 seconds each and averages them. The phone vibrates when each recording starts and stops.
