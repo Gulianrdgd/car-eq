@@ -30,7 +30,7 @@
 			<HistoryIcon class="text-muted-foreground size-7" />
 			<p class="text-sm font-semibold">No earlier iterations</p>
 			<p class="text-muted-foreground text-sm/relaxed">
-				Each time you apply new slider values, the old ones and their fit are kept here, so you can go back to them.
+				Each time you apply new slider values, this page keeps the old ones and their fit, so you can go back to them.
 			</p>
 		</div>
 	{/if}

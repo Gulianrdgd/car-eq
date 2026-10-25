@@ -110,7 +110,8 @@
 	<ResponseChart label="Measured frequency response compared with target" {lines} {dots} bands={session.bands} />
 	<ChartLegend items={legend} />
 	<p class="text-muted-foreground text-xs/relaxed">
-		The shaded area below 80 Hz is where phone mics lose sensitivity; real bass is stronger than shown. Tune that range by ear.
+		Phone mics lose sensitivity in the shaded area below 80 Hz, so the real bass is stronger than the chart shows. Tune
+		that range by ear.
 	</p>
 
 	<section class="grid gap-4 border-t pt-6">
@@ -123,8 +124,8 @@
 			<div class="grid gap-1">
 				<h2 class="text-lg font-semibold tracking-tight">Tool suggestion</h2>
 				<p class="text-muted-foreground text-sm/relaxed">
-					What this page would set, without Claude. Boosts are capped at +3 (+2 below 60 Hz unless tuned by ear); cuts do
-					most of the work.
+					What this page would set on its own. It cuts more than it boosts: boosts stop at +3, or +2 below 60 Hz unless
+					you tuned that band by ear.
 				</p>
 			</div>
 			<SuggestionBars out={session.suggestion} range={session.range} />
@@ -163,7 +164,7 @@
 			{#if !session.recs.passenger.length}
 				{@render more(SeatIcon, 'Measure the passenger seat', 'Optional. Claude can balance both front seats.', resolve('/prepare') + '?seat=passenger')}
 			{/if}
-			{@render more(EarIcon, 'Tune the bass by ear', 'Phone mics are weak below 80 Hz; your ears are not.', resolve('/ear'))}
+			{@render more(EarIcon, 'Tune the bass by ear', 'Phone mics pick up little below 80 Hz, so you match those bands by ear.', resolve('/ear'))}
 		</ul>
 	</section>
 

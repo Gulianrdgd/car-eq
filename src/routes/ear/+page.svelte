@@ -32,9 +32,10 @@
 
 <Screen title="Tune by ear" eyebrow="Iteration {session.it}" back={{ href: resolve('/results'), label: 'Results' }}>
 	<p class="text-muted-foreground text-sm/relaxed">
-		Your ears are a better bass mic than a phone. Each band alternates with a 1 kHz reference every second. Move the slider
-		until both sound <b class="text-foreground">equally loud</b>, then go to the next band. Keep the slider values from
-		this iteration on the head unit. The page corrects for how hearing perceives bass and treble; results are approximate.
+		Phone mics pick up little below 80 Hz, so this step uses your ears. Each band alternates with a 1 kHz reference every
+		second. Move the slider until both sound <b class="text-foreground">equally loud</b>, then go to the next band. Leave
+		this iteration's slider values on the head unit. The page corrects for how hearing perceives bass and treble, but the
+		results are approximate.
 	</p>
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<Field label="Test level" value="{audio.earLevel} dB" class="w-48">

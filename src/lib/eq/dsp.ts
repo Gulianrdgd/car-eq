@@ -107,7 +107,7 @@ function fft(re: Float64Array, im: Float64Array) {
 	}
 }
 
-/** Shift a curve so its 250 Hz – 2 kHz mean sits at 0 dB. */
+/** Shift a curve so its mean from 250 Hz to 2 kHz sits at 0 dB. */
 function normalize(curve: Curve): Curve {
 	let ref = 0, rc = 0;
 	GRID.forEach((f, i) => {
