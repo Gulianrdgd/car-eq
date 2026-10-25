@@ -12,7 +12,7 @@
 	import { page } from '$app/state';
 	import { session } from '#lib/eq/session.svelte.js';
 	import { audio } from '#lib/eq/audio.svelte.js';
-	import { fmtF, parseList, signed } from '#lib/eq/dsp.js';
+	import { fmtF, gain, parseList } from '#lib/eq/dsp.js';
 	import { cn } from '#lib/utils.js';
 
 	/** ?bands=40,63 (from a CEQ-SET next=ear:…) limits the list; otherwise all bands. */
@@ -60,11 +60,13 @@
 			{@const playing = audio.earKey === k}
 			<li class={cn('grid gap-2 px-3 py-3', playing && 'bg-muted/60')}>
 				<div class="flex items-center justify-between gap-3">
-					<span class="inline-flex items-center gap-1.5 text-base font-semibold">
-						{fmtF(fc)} Hz
-						{#if g != null}<CheckIcon class="text-ok size-4" />{/if}
+					<span class="grid gap-0.5">
+						<span class="inline-flex items-center gap-1.5 text-base font-semibold">
+							{fmtF(fc)} Hz
+							{#if g != null}<CheckIcon class="text-ok size-4" />{/if}
+						</span>
+						<span class={cn('text-sm tabular-nums', g == null && 'text-muted-foreground')}>{g != null ? `${gain(g)} dB` : 'not set'}</span>
 					</span>
-					<span class={cn('text-sm tabular-nums', g == null && 'text-muted-foreground')}>{g != null ? `${signed(g)} dB` : 'not set'}</span>
 					<Button
 						variant={playing ? 'default' : 'outline'}
 						class="h-11 w-24"

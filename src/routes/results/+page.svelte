@@ -86,7 +86,7 @@
 	{:else}
 		<section class="grid gap-2">
 			<p class="text-muted-foreground text-sm font-medium">Fit to target</p>
-			<p class="font-mono text-6xl/none font-semibold tracking-tight tabular-nums">
+			<p class="text-6xl/none font-semibold tracking-tight tabular-nums">
 				{session.fit != null ? `±${session.fit.toFixed(1)}` : '–'}<span class="text-muted-foreground text-xl font-normal"> dB</span>
 			</p>
 			{#if delta}<p class={cn('font-mono text-base font-medium', delta.tone)}>{delta.text}</p>{/if}
@@ -132,7 +132,7 @@
 			<p class="text-muted-foreground text-xs">M measured · E by ear · T target only</p>
 			<Button
 				variant="link"
-				class="h-auto justify-self-start px-0 text-sm"
+				class="h-11 justify-self-start px-0 text-sm"
 				onclick={() => {
 					session.applySuggestion();
 					goto(resolve('/apply'));
@@ -169,7 +169,7 @@
 	</section>
 
 	<Collapsible.Root bind:open={showText}>
-		<Collapsible.Trigger class="text-muted-foreground hover:text-foreground group flex items-center gap-1 text-sm transition-colors">
+		<Collapsible.Trigger class="text-muted-foreground hover:text-foreground group flex h-11 items-center gap-1 text-sm transition-colors">
 			<CaretDownIcon class="size-4 transition-transform group-data-[state=open]:rotate-180" /> Text for Claude
 		</Collapsible.Trigger>
 		<Collapsible.Content>
@@ -181,12 +181,12 @@
 	{#snippet actions()}
 		{#if session.measured && !copied}
 			<Button class={BIG} onclick={copy}><CopyIcon /> Copy for Claude</Button>
-			<a href={resolve('/paste')} class="text-muted-foreground hover:text-foreground py-1 text-center text-sm transition-colors">
+			<a href={resolve('/paste')} class="text-muted-foreground hover:text-foreground flex h-11 items-center justify-center text-sm transition-colors">
 				Already have Claude's reply? Paste it
 			</a>
 		{:else if session.measured}
 			<Button class={BIG} onclick={() => goto(resolve('/paste'))}><ClipboardIcon /> Paste Claude's reply</Button>
-			<button type="button" class="text-muted-foreground hover:text-foreground py-1 text-sm transition-colors" onclick={copy}>
+			<button type="button" class="text-muted-foreground hover:text-foreground h-11 text-sm transition-colors" onclick={copy}>
 				Copy the text again
 			</button>
 		{:else}

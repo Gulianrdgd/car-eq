@@ -193,7 +193,7 @@
 			The page records 5 spots around your head, 5 seconds each, and averages them. The phone vibrates when each recording
 			starts and stops.
 		</p>
-		<button type="button" class="text-primary justify-self-start text-sm underline-offset-4 hover:underline" onclick={() => (stage = 'upload')}>
+		<button type="button" class="text-primary h-11 justify-self-start text-sm underline-offset-4 hover:underline" onclick={() => (stage = 'upload')}>
 			Upload recordings instead
 		</button>
 	{:else if stage === 'run' || stage === 'level'}
@@ -221,7 +221,7 @@
 						<span class={cn('text-lg font-bold', phase === 'capture' && 'text-chart-4')}>
 							{phase === 'settle' ? 'Hold still…' : '● Recording'}
 						</span>
-						<span class="font-mono text-7xl/none font-semibold tabular-nums">{left}</span>
+						<span class="text-7xl/none font-semibold tabular-nums">{left}</span>
 					</div>
 					<div class="bg-muted h-2">
 						<div class={cn('h-full transition-[width] duration-100', phase === 'settle' ? 'bg-muted-foreground' : 'bg-chart-4')} style:width="{frac * 100}%"></div>
@@ -247,7 +247,7 @@
 			<UploadIcon /> Choose recordings
 			<input type="file" multiple class="sr-only" accept="audio/*,video/*,.wav,.m4a,.mp3,.aac,.ogg,.opus,.mp4,.mov,.3gp,.amr" onchange={upload} />
 		</label>
-		<button type="button" class="text-primary justify-self-start text-sm underline-offset-4 hover:underline" onclick={() => ((stage = 'intro'), (note = ''))}>
+		<button type="button" class="text-primary h-11 justify-self-start text-sm underline-offset-4 hover:underline" onclick={() => ((stage = 'intro'), (note = ''))}>
 			Measure with the mic instead
 		</button>
 		{#if captures.length}

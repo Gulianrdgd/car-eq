@@ -25,7 +25,7 @@
 	];
 	const step = $derived(LOOP.findIndex((s) => s.id === page.route.id));
 	const icon = (id: string) =>
-		cn(buttonVariants({ variant: 'ghost', size: 'icon-lg' }), '[&_svg]:size-5', page.route.id === id && 'bg-muted text-primary');
+		cn(buttonVariants({ variant: 'ghost', size: 'icon-lg' }), 'size-11 [&_svg]:size-5', page.route.id === id && 'bg-muted text-primary');
 </script>
 
 <svelte:head>

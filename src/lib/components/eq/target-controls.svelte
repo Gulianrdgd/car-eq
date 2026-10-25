@@ -10,7 +10,7 @@
 <div class="grid gap-5 sm:grid-cols-[1.1fr_1fr_1fr] sm:items-end">
 	<Field label="Target sound">
 		<Select.Root type="single" value={session.preset} onValueChange={(v) => (session.preset = v as PresetKey)}>
-			<Select.Trigger class="h-11 w-full text-sm">{PRESETS[session.preset].label}</Select.Trigger>
+			<Select.Trigger class="w-full text-sm data-[size=default]:h-11">{PRESETS[session.preset].label}</Select.Trigger>
 			<Select.Content>
 				{#each Object.entries(PRESETS) as [key, p] (key)}
 					<Select.Item value={key} label={p.label} class="py-3 text-sm">

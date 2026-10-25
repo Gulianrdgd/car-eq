@@ -140,6 +140,13 @@
 		@apply font-sans antialiased;
 		-webkit-tap-highlight-color: transparent;
 	}
+	a,
+	button,
+	label,
+	[role='slider'],
+	[role='checkbox'] {
+		touch-action: manipulation;
+	}
 	h1,
 	h2,
 	h3 {

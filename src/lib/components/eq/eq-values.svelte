@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fmtF, signed } from '#lib/eq/dsp.js';
+	import { fmtF, gain } from '#lib/eq/dsp.js';
 	import { cn } from '#lib/utils.js';
 
 	/** Slider values as big numbers, one tile per band; with `prev`, changes are highlighted. */
@@ -18,9 +18,9 @@
 			)}
 		>
 			<span class="text-muted-foreground font-mono text-[11px]">{fmtF(fc)}</span>
-			<span class="font-mono text-3xl font-semibold tracking-tight tabular-nums">{signed(v)}</span>
+			<span class="text-3xl font-semibold tracking-tight tabular-nums">{gain(v)}</span>
 			{#if changed}
-				<span class="text-primary font-mono text-[11px] tabular-nums">{signed(p)} → {signed(v)}</span>
+				<span class="text-primary font-mono text-[11px] tabular-nums">{gain(p)} → {gain(v)}</span>
 			{:else if prev}
 				<span class="text-muted-foreground text-[11px]">same</span>
 			{/if}

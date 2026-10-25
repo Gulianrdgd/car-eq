@@ -46,7 +46,7 @@
 	<Textarea
 		bind:value={text}
 		placeholder="CEQ-SET&#10;cur=…&#10;END"
-		class="min-h-40 font-mono text-sm"
+		class="min-h-40 font-mono text-base md:text-sm"
 		aria-label="Claude's reply"
 		aria-invalid={result != null && !result.ok}
 	/>

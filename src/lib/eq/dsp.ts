@@ -329,3 +329,6 @@ export const fmtF = (f: number) =>
 	f >= 1000 ? +(f / 1000).toFixed(f % 1000 ? 1 : 0) + 'k' : String(Math.round(f));
 
 export const signed = (v: number) => (v > 0 ? '+' : '') + v;
+
+/** For display only: a true minus sign lines up with + in tabular figures. Protocol text keeps ASCII. */
+export const gain = (v: number) => (v > 0 ? '+' : v < 0 ? '\u2212' : '') + Math.abs(v);

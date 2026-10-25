@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { session, type Iteration } from '#lib/eq/session.svelte.js';
-	import { PRESETS, signed } from '#lib/eq/dsp.js';
+	import { PRESETS, gain, signed } from '#lib/eq/dsp.js';
 
 	const rows = $derived([...session.history].reverse());
 	const fmtDate = (ts: number) => new Date(ts).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
@@ -22,7 +22,7 @@
 			<span>Iteration {session.it} · now</span>
 			<span class="font-mono tabular-nums">{session.fit != null ? `±${session.fit.toFixed(1)} dB` : 'not measured'}</span>
 		</div>
-		<p class="text-muted-foreground font-mono text-xs tabular-nums">{session.cur.map(signed).join(' ')}</p>
+		<p class="text-muted-foreground font-mono text-xs tabular-nums">{session.cur.map(gain).join(' ')}</p>
 	</div>
 
 	{#if !rows.length}
@@ -45,7 +45,7 @@
 				<p class="text-muted-foreground text-xs">
 					{fmtDate(h.ts)} · {PRESETS[h.preset].label}, bass {signed(h.bass)}, treble {signed(h.treble)}
 				</p>
-				<p class="font-mono text-xs tabular-nums">{h.cur.map(signed).join(' ')}</p>
+				<p class="font-mono text-xs tabular-nums">{h.cur.map(gain).join(' ')}</p>
 				{#if h.note}<p class="text-muted-foreground text-xs/relaxed">{h.note}</p>{/if}
 				<Button variant="outline" class="h-11 justify-self-start" onclick={() => restore(h)}>Restore these values</Button>
 			</li>

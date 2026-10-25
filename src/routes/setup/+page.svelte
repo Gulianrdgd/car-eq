@@ -3,6 +3,7 @@
 	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import Screen, { BIG } from '#lib/components/eq/screen.svelte';
 	import Field from '#lib/components/eq/field.svelte';
 	import { goto } from '$app/navigation';
@@ -46,11 +47,21 @@
 	</p>
 
 	<Field label="Car" for="car">
-		<Input id="car" bind:value={car} placeholder="Golf 7 stock speakers" class="h-11 text-sm" />
+		<Input id="car" bind:value={car} placeholder="Golf 7 stock speakers" class="h-11 text-base md:text-sm" autocomplete="off" />
 	</Field>
 
 	<Field label="Band frequencies in Hz" for="bands">
-		<Input id="bands" bind:value={bandsText} class="h-11 font-mono text-sm" aria-invalid={!!bandsError} aria-describedby="bands-help" />
+		<Textarea
+			id="bands"
+			bind:value={bandsText}
+			rows={2}
+			class="min-h-0 resize-none font-mono text-base md:text-sm"
+			autocomplete="off"
+			autocapitalize="off"
+			spellcheck="false"
+			aria-invalid={!!bandsError}
+			aria-describedby="bands-help"
+		/>
 		<p id="bands-help" class={bandsError ? 'text-destructive text-xs' : 'text-muted-foreground font-mono text-xs'}>
 			{#if bandsError}
 				{bandsError} Copy them from your EQ screen, e.g. 63, 250, 1k, 2.5k.
@@ -62,12 +73,12 @@
 
 	<div class="flex flex-wrap items-end gap-4">
 		<Field label="Max ± per slider" for="range">
-			<Input id="range" type="number" min={1} max={24} bind:value={range} class="h-11 w-24 font-mono text-sm" aria-invalid={!!rangeError} />
+			<Input id="range" type="number" min={1} max={24} bind:value={range} class="h-11 w-24 font-mono text-base md:text-sm" inputmode="numeric" aria-invalid={!!rangeError} />
 		</Field>
 		<Field label="Step">
 			<ToggleGroup.Root type="single" variant="outline" value={step} onValueChange={(v) => v && (step = v)}>
 				{#each ['0.5', '1', '2'] as s (s)}
-					<ToggleGroup.Item value={s} class="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground h-11 px-4 text-sm">
+					<ToggleGroup.Item value={s} class="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground h-11 min-w-12 px-4 text-sm">
 						{s}
 					</ToggleGroup.Item>
 				{/each}
@@ -77,7 +88,7 @@
 
 	<Field label="Ear tuning results">
 		<Select.Root type="single" value={earUse} onValueChange={(v) => (earUse = v as EarUse)}>
-			<Select.Trigger class="h-11 w-full text-sm">{EAR_USE[earUse]}</Select.Trigger>
+			<Select.Trigger class="w-full text-sm data-[size=default]:h-11">{EAR_USE[earUse]}</Select.Trigger>
 			<Select.Content>
 				{#each Object.entries(EAR_USE) as [value, label] (value)}
 					<Select.Item {value} {label} class="py-3 text-sm" />

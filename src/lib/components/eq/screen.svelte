@@ -33,7 +33,7 @@
 		{#if back}
 			<a
 				href={back.href}
-				class="text-muted-foreground hover:text-foreground focus-visible:ring-ring -ml-1 mb-1 inline-flex w-fit items-center gap-1 py-1 pr-2 text-sm transition-colors outline-none focus-visible:ring-1"
+				class="text-muted-foreground hover:text-foreground focus-visible:ring-ring -my-1 -ml-1 inline-flex h-11 w-fit items-center gap-1 pr-2 text-sm transition-colors outline-none focus-visible:ring-1"
 			>
 				<CaretLeftIcon class="size-4" />{back.label}
 			</a>
